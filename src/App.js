@@ -5,11 +5,14 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Heading from './components/Heading';
 import AddBook from './components/AddBook';
+import EditBook from './EditBook';
 
 function App() {
   const [books, setBooks] = useState([]);
+  const [id, setId] = useState();
 
   const { REACT_APP_API, REACT_APP_DELETE_API } = process.env;
 
@@ -43,6 +46,17 @@ function App() {
       .catch((err) => console.error(err));
   };
 
+  // Eit Book
+  const changeBook = (id,book) => {
+    fetch(`REACT_APP_DELETE_API}`,
+   {
+      method: 'PUT',
+      body: JSON.stringify(book)
+    })
+    .then(response => fetchBooks())
+    .catch(err => console.error(err))
+  }
+
   // Post Request to Delete Book
 
   const deleteBook = (id) => {
@@ -60,6 +74,7 @@ function App() {
         <center className="py-5">
           <AddBook addBook={addBook} />
         </center>
+        <EditBook id={id} changeBook={changeBook}/>
 
         <div
           className="ag-theme-material"
@@ -71,6 +86,17 @@ function App() {
             <AgGridColumn sortable={true} filter={true} field="year" />
             <AgGridColumn sortable={true} filter={true} field="isbn" />
             <AgGridColumn sortable={true} filter={true} field="price" />
+
+            <AgGridColumn 
+            headerName=''
+            field='id' 
+            width={90}
+            cellRendererFramework={ params => 
+              <IconButton onClick={() => setId(params.value)} size="small" color="secondary">
+                <EditIcon />
+              </IconButton>
+            }
+          /> 
 
             <AgGridColumn
               headerName=""
